@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pressed State (Darker Blue) -->
+    <item android:state_pressed="true" android:color="@android:color/holo_blue_dark" />
+
+    <!-- Default State (Lighter Blue) -->
+    <item android:color="@android:color/holo_blue_light" />
+</selector>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_red_dark"
+    android:padding="16dp">
+
+    <!-- LinearLayout for vertical stacking of elements -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp">
+
+        <!-- Score TextView (at the top) -->
+        <TextView
+            android:id="@+id/resultsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You scored 0 out of 6!"
+            android:textSize="32sp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Globe Icon (in the middle) -->
+        <ImageView
+            android:id="@+id/world"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/world"
+            android:contentDescription="Globe Icon"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Feedback TextView (below the globe) -->
+        <TextView
+            android:id="@+id/feedbackText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Feedback will appear here"
+            android:textSize="24sp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginBottom="40dp"/>
+
+        <!-- Home Button (at the bottom) -->
+        <Button
+            android:id="@+id/homeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            android:textSize="18sp"
+            android:backgroundTint="@android:color/white"
+            android:textColor="@android:color/black" />
+
+    </LinearLayout>
+
+</FrameLayout>

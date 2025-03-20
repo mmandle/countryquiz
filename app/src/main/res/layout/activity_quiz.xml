@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quizContainer"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -20,17 +21,38 @@
         app:tabIndicatorColor="@android:color/white"
         app:tabMode="fixed" />
 
-    <Button
-        android:id="@+id/exitButton"
-        android:layout_width="wrap_content"
+    <!-- A LinearLayout for the swipe text, progress text, and exit button -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Exit"
-        android:textSize="16sp"
-        android:backgroundTint="@android:color/white"
-        android:textColor="@android:color/black"
-        android:padding="8dp"
-        android:layout_margin="16dp"
-        android:layout_gravity="top|end" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="750dp"
+        android:gravity="bottom|center_horizontal"
+        android:orientation="vertical">
 
+        <!-- Progress Text to show the number of completed questions -->
+        <TextView
+            android:id="@+id/progressText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="0 of 6"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <!-- Exit Button -->
+        <Button
+            android:id="@+id/exitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@android:color/white"
+            android:padding="8dp"
+            android:text="Exit"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
