@@ -1,8 +1,11 @@
 package edu.uga.cs.countryquiz;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CountryQuizDBHelper extends SQLiteOpenHelper {
 
@@ -57,5 +60,31 @@ public class CountryQuizDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COUNTRIES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUIZZES);
         onCreate(db);
+    }
+
+    // Retrieve all countries
+    public List<Country> getAllCountries() {
+        List<Country> countries = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_COUNTRIES, new String[]{COLUMN_COUNTRY_ID, COLUMN_COUNTRY_NAME, COLUMN_COUNTRY_CONTINENT},
+                null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int idIndex = cursor.getColumnIndex(COLUMN_COUNTRY_ID);
+                int nameIndex = cursor.getColumnIndex(COLUMN_COUNTRY_NAME);
+                int continentIndex = cursor.getColumnIndex(COLUMN_COUNTRY_CONTINENT);
+
+                if (idIndex != -1 && nameIndex != -1 && continentIndex != -1) {
+                    countries.add(new Country(
+                            cursor.getLong(idIndex),
+                            cursor.getString(nameIndex),
+                            cursor.getString(continentIndex)
+                    ));
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return countries;
     }
 }
