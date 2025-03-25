@@ -58,42 +58,23 @@ public class CountryQuizData {
         cursor = db.query(CountryQuizDBHelper.TABLE_QUIZZES, allColumns, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
-            long id = cursor.getLong(cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_ID));
-            String date = cursor.getString(cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_DATE));
-            int score = cursor.getInt(cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_SCORE));
+            int idIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_ID);
+            int dateIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_DATE);
+            int scoreIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_SCORE);
 
-            // Creating a new object
-            Quiz quiz = new Quiz(id, date, score);
-            quiz.setId(id);
-            quizzes.add(quiz);
-        } // while
+            // Ensure indexes are valid to prevent the "Value must be ≥ 0" error
+            if (idIndex != -1 && dateIndex != -1 && scoreIndex != -1) {
+                long id = cursor.getLong(idIndex);
+                String date = cursor.getString(dateIndex);
+                int score = cursor.getInt(scoreIndex);
 
+                // Creating a new object
+                Quiz quiz = new Quiz(id, date, score);
+                quiz.setId(id); // not really necessary
+                quizzes.add(quiz);
+            }
+        }
+        cursor.close();
         return quizzes;
     } // retrieveAllQuizzes
-
-//    // Retrieve all countries
-//    public List<Country> getAllCountries() {
-//        List<Country> countries = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursor = db.query(TABLE_COUNTRIES, new String[]{COLUMN_COUNTRY_ID, COLUMN_COUNTRY_NAME, COLUMN_COUNTRY_CONTINENT},
-//                null, null, null, null, null);
-//        if (cursor.moveToFirst()) {
-//            do {
-//                int idIndex = cursor.getColumnIndex(COLUMN_COUNTRY_ID);
-//                int nameIndex = cursor.getColumnIndex(COLUMN_COUNTRY_NAME);
-//                int continentIndex = cursor.getColumnIndex(COLUMN_COUNTRY_CONTINENT);
-//
-//                if (idIndex != -1 && nameIndex != -1 && continentIndex != -1) {
-//                    countries.add(new Country(
-//                            cursor.getLong(idIndex),
-//                            cursor.getString(nameIndex),
-//                            cursor.getString(continentIndex)
-//                    ));
-//                }
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//        db.close();
-//        return countries;
-//    }
 }
