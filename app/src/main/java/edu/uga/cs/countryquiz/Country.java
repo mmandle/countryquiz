@@ -6,10 +6,13 @@ public class Country {
     private String continent;
 
     public Country() {
+        this.id = -1;
+        this.name = null;
+        this.continent = null;
     }
 
-    public Country(long id, String name, String continent) {
-        this.id = id;
+    public Country(String name, String continent) {
+        this.id = -1;  // ID will be assigned by the database
         this.name = name;
         this.continent = continent;
     }

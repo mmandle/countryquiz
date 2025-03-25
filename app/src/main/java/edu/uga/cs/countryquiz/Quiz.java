@@ -6,10 +6,13 @@ public class Quiz {
     private int score;
 
     public Quiz() {
+        this.id = -1;
+        this.date = null;
+        this.score = 0;
     }
 
-    public Quiz(long id, String date, int score) {
-        this.id = id;
+    public Quiz(String date, int score) {
+        this.id = -1;  // ID will be assigned by the database
         this.date = date;
         this.score = score;
     }
