@@ -13,6 +13,13 @@ public class CountryQuizData {
     private SQLiteDatabase db;
     private SQLiteOpenHelper countryQuizDbHelper;
 
+    // Define all column names for the quizzes table
+    private static final String[] allColumns = {
+            CountryQuizDBHelper.QUIZ_COLUMN_ID,
+            CountryQuizDBHelper.QUIZ_COLUMN_DATE,
+            CountryQuizDBHelper.QUIZ_COLUMN_SCORE
+    };
+
     public CountryQuizData(Context context) {
         this.countryQuizDbHelper = CountryQuizDBHelper.getInstance(context);
     }
@@ -48,12 +55,12 @@ public class CountryQuizData {
         ArrayList<Quiz> quizzes = new ArrayList<>();
         Cursor cursor = null;
 
-        cursor = db.query(CountryQuizDBHelper.TABLE_QUIZZES, allColumns, null, null);
+        cursor = db.query(CountryQuizDBHelper.TABLE_QUIZZES, allColumns, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
-            long id = cursor.getLong(cursor.getColumnIndex(CountryQuizDBHelper.COLUMN_QUIZ_ID));
-            String date = cursor.getString(cursor.getColumnIndex(CountryQuizDBHelper.COLUMN_QUIZ_DATE));
-            long score = cursor.getLong(cursor.getColumnIndex(CountryQuizDBHelper.COLUMN_QUIZ_SCORE));
+            long id = cursor.getLong(cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_ID));
+            String date = cursor.getString(cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_DATE));
+            int score = cursor.getInt(cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_SCORE));
 
             // Creating a new object
             Quiz quiz = new Quiz(id, date, score);
