@@ -11,32 +11,35 @@ public class CountryQuizDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "countryquiz.db";
     private static final int DATABASE_VERSION = 1;
+
+    // Private reference to the single instance
     private static CountryQuizDBHelper instance;
 
+    // Column names just defined as Java constants
     // Table names
     public static final String TABLE_COUNTRIES = "countries";
     public static final String TABLE_QUIZZES = "quizzes";
 
     // Country table columns
-    public static final String COLUMN_COUNTRY_ID = "id";
-    public static final String COLUMN_COUNTRY_NAME = "name";
-    public static final String COLUMN_COUNTRY_CONTINENT = "continent";
+    public static final String COUNTRY_COLUMN_ID = "id";
+    public static final String COUNTRY_COLUMN_NAME = "name";
+    public static final String COUNTRY_COLUMN_CONTINENT = "continent";
 
     // Quiz table columns
-    public static final String COLUMN_QUIZ_ID = "id";
-    public static final String COLUMN_QUIZ_DATE = "date";
-    public static final String COLUMN_QUIZ_SCORE = "score";
+    public static final String QUIZ_COLUMN_ID = "id";
+    public static final String QUIZ_COLUMN_DATE = "date";
+    public static final String QUIZ_COLUMN_SCORE = "score";
 
     // SQL statements
-    private static final String CREATE_COUNTRIES_TABLE = "CREATE TABLE " + TABLE_COUNTRIES + " ("
-            + COLUMN_COUNTRY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_COUNTRY_NAME + " TEXT NOT NULL, "
-            + COLUMN_COUNTRY_CONTINENT + " TEXT NOT NULL);";
+    private static final String CREATE_COUNTRIES = "CREATE TABLE " + TABLE_COUNTRIES + " ("
+            + COUNTRY_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + COUNTRY_COLUMN_NAME + " TEXT NOT NULL, "
+            + COUNTRY_COLUMN_CONTINENT + " TEXT NOT NULL);";
 
-    private static final String CREATE_QUIZZES_TABLE = "CREATE TABLE " + TABLE_QUIZZES + " ("
-            + COLUMN_QUIZ_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + COLUMN_QUIZ_DATE + " TEXT NOT NULL, "
-            + COLUMN_QUIZ_SCORE + " INTEGER NOT NULL);";
+    private static final String CREATE_QUIZZES = "CREATE TABLE " + TABLE_QUIZZES + " ("
+            + QUIZ_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + QUIZ_COLUMN_DATE + " TEXT NOT NULL, "
+            + QUIZ_COLUMN_SCORE + " INTEGER NOT NULL);";
 
     private CountryQuizDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -49,42 +52,18 @@ public class CountryQuizDBHelper extends SQLiteOpenHelper {
         return instance;
     }
 
+    // This method creates the database
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_COUNTRIES_TABLE);
-        db.execSQL(CREATE_QUIZZES_TABLE);
+        db.execSQL(CREATE_COUNTRIES);
+        db.execSQL(CREATE_QUIZZES);
     }
 
+    // This method will perform a database upgrade, if the old recorded version of the database is lower than the new version
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COUNTRIES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUIZZES);
         onCreate(db);
-    }
-
-    // Retrieve all countries
-    public List<Country> getAllCountries() {
-        List<Country> countries = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_COUNTRIES, new String[]{COLUMN_COUNTRY_ID, COLUMN_COUNTRY_NAME, COLUMN_COUNTRY_CONTINENT},
-                null, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            do {
-                int idIndex = cursor.getColumnIndex(COLUMN_COUNTRY_ID);
-                int nameIndex = cursor.getColumnIndex(COLUMN_COUNTRY_NAME);
-                int continentIndex = cursor.getColumnIndex(COLUMN_COUNTRY_CONTINENT);
-
-                if (idIndex != -1 && nameIndex != -1 && continentIndex != -1) {
-                    countries.add(new Country(
-                            cursor.getLong(idIndex),
-                            cursor.getString(nameIndex),
-                            cursor.getString(continentIndex)
-                    ));
-                }
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        return countries;
     }
 }
