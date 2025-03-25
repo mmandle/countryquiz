@@ -8,7 +8,8 @@ public class Country {
     public Country() {
     }
 
-    public Country(String name, String continent) {
+    public Country(long id, String name, String continent) {
+        this.id = id;
         this.name = name;
         this.continent = continent;
     }

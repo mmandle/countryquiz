@@ -1,7 +1,5 @@
 package edu.uga.cs.countryquiz;
 
-import java.util.Date;
-
 public class Quiz {
     private long id;
     private String date;
@@ -10,7 +8,8 @@ public class Quiz {
     public Quiz() {
     }
 
-    public Quiz(String date, int score) {
+    public Quiz(long id, String date, int score) {
+        this.id = id;
         this.date = date;
         this.score = score;
     }
