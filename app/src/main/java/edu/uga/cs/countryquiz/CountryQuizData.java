@@ -90,8 +90,10 @@ public class CountryQuizData {
                     columnIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_SCORE);
                     int score = cursor.getInt(columnIndex);
 
-                    // Create a new Quiz object
-                    Quiz quiz = new Quiz(id, date, score);
+                    // Create a new Quiz object and set its state to the retrieved values
+                    Quiz quiz = new Quiz(date, score);
+                    quiz.setId(id);
+                    // Add it to the List
                     quizzes.add(quiz);
                     Log.d(DEBUG_TAG, "Retrieved Quiz: " + quiz);
                 }

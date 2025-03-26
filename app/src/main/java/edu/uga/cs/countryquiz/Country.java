@@ -1,5 +1,11 @@
 package edu.uga.cs.countryquiz;
 
+/**
+ * This class (a POJO) represents a single country, including the id, name,
+ * and continent.
+ * The id is -1 if the object has not been persisted in the database yet, and
+ * the db table's primary key value, if it has been persisted.
+ */
 public class Country {
     private long id;
     private String name;
@@ -12,7 +18,7 @@ public class Country {
     }
 
     public Country(String name, String continent) {
-        this.id = -1;  // ID will be assigned by the database
+        this.id = -1;  // the primary key id will be set by a setter method
         this.name = name;
         this.continent = continent;
     }

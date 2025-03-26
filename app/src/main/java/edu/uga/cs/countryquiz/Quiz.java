@@ -1,24 +1,24 @@
 package edu.uga.cs.countryquiz;
 
+/**
+ * This class (a POJO) represents a single quiz, including the id, date,
+ * and score.
+ * The id is -1 if the object has not been persisted in the database yet, and
+ * the db table's primary key value, if it has been persisted.
+ */
 public class Quiz {
     private long id;
     private String date;
     private int score;
 
-//    public Quiz() {
-//        this.id = -1;
-//        this.date = null;
-//        this.score = 0;
-//    }
-//
-//    public Quiz(String date, int score) {
-//        this.id = -1;  // ID will be assigned by the database
-//        this.date = date;
-//        this.score = score;
-//    }
+    public Quiz() {
+        this.id = -1;
+        this.date = null;
+        this.score = 0;
+    }
 
-    public Quiz(long id, String date, int score) {
-        this.id = id;
+    public Quiz(String date, int score) {
+        this.id = -1;
         this.date = date;
         this.score = score;
     }
