@@ -1,9 +1,8 @@
 package edu.uga.cs.countryquiz;
 
-import android.os.AsyncTask;
 import java.util.List;
 
-public class RetrieveCountriesTask extends AsyncTask<Void, Void, List<String>> {
+public class RetrieveCountriesTask extends AsyncTask<Void, List<String>> {
     private CountryQuizData dbHelper;
     private OnCountriesRetrievedListener listener;
 

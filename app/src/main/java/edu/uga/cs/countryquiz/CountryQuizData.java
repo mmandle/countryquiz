@@ -68,9 +68,9 @@ public class CountryQuizData {
         return quiz;
     } // storeQuiz
 
-    // Retrieve all job leads and return them as a List.
-    // This is how we restore persistent objects stored as rows in the job leads table in the database.
-    // For each retrieved row, we create a new JobLead (Java POJO object) instance and add it to the list.
+    // Retrieve all quizzes and return them as a List.
+    // This is how we restore persistent objects stored as rows in the quizzes table in the database.
+    // For each retrieved row, we create a new Quiz (Java POJO object) instance and add it to the list.
     public List<Quiz> retrieveAllQuizzes() {
         ArrayList<Quiz> quizzes = new ArrayList<>();
         Cursor cursor = null;

@@ -1,7 +1,6 @@
 package edu.uga.cs.countryquiz;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import com.opencsv.CSVReader;
 import java.io.InputStream;
@@ -9,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVReaderTask extends AsyncTask<Context, Void, List<Country>> {
+public class CSVReaderTask extends AsyncTask<Void, List<Country>> {
     private static final String TAG = "CSVReaderTask";
     private OnCSVReadListener listener;
     private Context context;
@@ -20,11 +19,11 @@ public class CSVReaderTask extends AsyncTask<Context, Void, List<Country>> {
     }
 
     @Override
-    protected List<Country> doInBackground(Context... contexts) {
+    protected List<Country> doInBackground(Void... voids) {
         List<Country> countries = new ArrayList<>();
         try {
-            // Open the CSV file from assets
-            InputStream inputStream = context.getAssets().open("countries.csv");
+            // Open the correct CSV file from assets
+            InputStream inputStream = context.getAssets().open("country_continent.csv");
             CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
             String[] nextRow;
 
@@ -37,9 +36,9 @@ public class CSVReaderTask extends AsyncTask<Context, Void, List<Country>> {
                 }
             }
 
-            reader.close(); // Ensure the reader is closed properly
+            reader.close();
         } catch (Exception e) {
-            Log.e(TAG, "Error reading CSV file", e);
+            Log.e(TAG, "Error reading CSV file: " + e.getMessage(), e);
         }
         return countries;
     }
