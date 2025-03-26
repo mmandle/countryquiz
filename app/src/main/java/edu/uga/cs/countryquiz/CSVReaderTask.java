@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CSVReaderTask extends AsyncTask<Void, List<Country>> {
-    private static final String TAG = "CSVReaderTask";
+    private static final String DEBUG_TAG = "CSVReaderTask";
     private OnCSVReadListener listener;
     private Context context;
 
@@ -38,7 +38,7 @@ public class CSVReaderTask extends AsyncTask<Void, List<Country>> {
 
             reader.close();
         } catch (Exception e) {
-            Log.e(TAG, "Error reading CSV file: " + e.getMessage(), e);
+            Log.e(DEBUG_TAG, "Error reading CSV file: " + e.getMessage(), e);
         }
         return countries;
     }
