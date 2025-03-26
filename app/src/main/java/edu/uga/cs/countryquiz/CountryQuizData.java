@@ -5,11 +5,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class facilitates storing and restoring quizzes stored.
+ */
 public class CountryQuizData {
+
+    public static final String DEBUG_TAG = "CountryQuizData";
+
+    // this is a reference to our database; it is used later to run SQL commands
     private SQLiteDatabase db;
     private SQLiteOpenHelper countryQuizDbHelper;
 
@@ -24,14 +32,23 @@ public class CountryQuizData {
         this.countryQuizDbHelper = CountryQuizDBHelper.getInstance(context);
     }
 
+    // Open the database
     public void open() {
         db = countryQuizDbHelper.getWritableDatabase();
+        Log.d( DEBUG_TAG, "CountryQuizData: dp open" );
     }
 
+    // Close the database
     public void close() {
         if (countryQuizDbHelper != null) {
             countryQuizDbHelper.close();
+            Log.d(DEBUG_TAG, "CountryQuizData: db closed");
         }
+    }
+
+    public boolean isDBOpen()
+    {
+        return db.isOpen();
     }
 
     // Store a new quiz result
@@ -51,30 +68,46 @@ public class CountryQuizData {
         return quiz;
     } // storeQuiz
 
+    // Retrieve all job leads and return them as a List.
+    // This is how we restore persistent objects stored as rows in the job leads table in the database.
+    // For each retrieved row, we create a new JobLead (Java POJO object) instance and add it to the list.
     public List<Quiz> retrieveAllQuizzes() {
         ArrayList<Quiz> quizzes = new ArrayList<>();
         Cursor cursor = null;
+        int columnIndex;
 
-        cursor = db.query(CountryQuizDBHelper.TABLE_QUIZZES, allColumns, null, null, null, null, null);
+        try {
+            // Execute the select query and get the Cursor to iterate over the retrieved rows
+            cursor = db.query(CountryQuizDBHelper.TABLE_QUIZZES, allColumns, null, null, null, null, null);
 
-        while (cursor.moveToNext()) {
-            int idIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_ID);
-            int dateIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_DATE);
-            int scoreIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_SCORE);
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    // Retrieve column values
+                    columnIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_ID);
+                    long id = cursor.getLong(columnIndex);
+                    columnIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_DATE);
+                    String date = cursor.getString(columnIndex);
+                    columnIndex = cursor.getColumnIndex(CountryQuizDBHelper.QUIZ_COLUMN_SCORE);
+                    int score = cursor.getInt(columnIndex);
 
-            // Ensure indexes are valid to prevent the "Value must be ≥ 0" error
-            if (idIndex != -1 && dateIndex != -1 && scoreIndex != -1) {
-                long id = cursor.getLong(idIndex);
-                String date = cursor.getString(dateIndex);
-                int score = cursor.getInt(scoreIndex);
-
-                // Creating a new object
-                Quiz quiz = new Quiz(id, date, score);
-                quiz.setId(id); // not really necessary
-                quizzes.add(quiz);
+                    // Create a new Quiz object
+                    Quiz quiz = new Quiz(id, date, score);
+                    quizzes.add(quiz);
+                    Log.d(DEBUG_TAG, "Retrieved Quiz: " + quiz);
+                }
+                Log.d(DEBUG_TAG, "Number of records from DB: " + cursor.getCount());
+            } else {
+                Log.d(DEBUG_TAG, "Number of records from DB: 0");
+            }
+        } catch (Exception e) {
+            Log.d(DEBUG_TAG, "Exception caught: " + e);
+        } finally {
+            // Close the cursor
+            if (cursor != null) {
+                cursor.close();
             }
         }
-        cursor.close();
         return quizzes;
-    } // retrieveAllQuizzes
+    }
+    // retrieveAllQuizzes
 }
