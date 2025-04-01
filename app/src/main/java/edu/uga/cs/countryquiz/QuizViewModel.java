@@ -3,12 +3,15 @@ package edu.uga.cs.countryquiz;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import java.util.List;
 
 public class QuizViewModel extends ViewModel {
 
-    private static final int TOTAL_QUESTIONS = 6;  // Total number of questions
+    private static final int TOTAL_QUESTIONS = 6;
     private final MutableLiveData<Integer> completedQuestions = new MutableLiveData<>(0);
-    private final MutableLiveData<Integer> correctAnswers = new MutableLiveData<>(0); // Track correct answers
+    private final MutableLiveData<Integer> correctAnswers = new MutableLiveData<>(0);
+
+    private List<Country> countryList;  // Store the retrieved country list
 
     // Increment the count of completed questions
     public void incrementCompletedQuestions() {
@@ -36,14 +39,29 @@ public class QuizViewModel extends ViewModel {
         return correctAnswers;
     }
 
-    // Check if the quiz is completed (i.e., all questions are answered)
+    // Check if the quiz is completed
     public boolean isQuizCompleted() {
         return completedQuestions.getValue() != null && completedQuestions.getValue() == TOTAL_QUESTIONS;
     }
 
-    // Reset the quiz progress (in case user wants to restart)
+    // Reset the quiz
     public void resetQuiz() {
         completedQuestions.setValue(0);
         correctAnswers.setValue(0);
+    }
+
+    // Store the retrieved country list
+    public void setCountryList(List<Country> countries) {
+        this.countryList = countries;
+    }
+
+    // Retrieve the stored country list
+    public List<Country> getCountryList() {
+        return countryList;
+    }
+
+    // Check if the country list is already loaded
+    public boolean isCountryListLoaded() {
+        return countryList != null && !countryList.isEmpty();
     }
 }
