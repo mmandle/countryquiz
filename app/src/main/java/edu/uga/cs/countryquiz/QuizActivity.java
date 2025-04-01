@@ -30,38 +30,41 @@ public class QuizActivity extends AppCompatActivity {
         Button exitButton = findViewById(R.id.exitButton);
         progressText = findViewById(R.id.progressText);
 
-        // Set up ViewModel
         quizViewModel = new ViewModelProvider(this).get(QuizViewModel.class);
 
-        // Set up ViewPager2 with the adapter
-        quizPagerAdapter = new QuizPagerAdapter(this);
-        viewPager.setAdapter(quizPagerAdapter);
+        // Fetch countries only once
+        if (!quizViewModel.isCountryListLoaded()) {
+            new RetrieveCountries(new CountryQuizData(this), countries -> {
+                quizViewModel.setCountryList(countries);
+                setupQuiz();
+            }).execute();
+        } else {
+            setupQuiz(); // If already loaded, proceed with quiz setup
+        }
 
-        // Link TabLayout with ViewPager2 for page indicators
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            tab.setText("Q" + (position + 1)); // Label each tab with Q1, Q2, Q3...
-        }).attach();
-
-        // Set Exit Button functionality
         exitButton.setOnClickListener(v -> {
             Intent intent = new Intent(QuizActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         });
 
-        // Observe the number of completed questions
         quizViewModel.getCompletedQuestions().observe(this, completed -> {
-            // Update the progress text
-            if (completed != null) {
-                progressText.setText(completed + " of 6");
-            }
+            progressText.setText(completed + " of 6");
 
-            // If all 6 questions are answered, show the ResultsFragment
             if (completed != null && completed == 6) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.quizContainer, new ResultsFragment())
                         .commit();
             }
         });
+    }
+
+    private void setupQuiz() {
+        quizPagerAdapter = new QuizPagerAdapter(this);
+        viewPager.setAdapter(quizPagerAdapter);
+
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            tab.setText("Q" + (position + 1));
+        }).attach();
     }
 }
