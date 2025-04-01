@@ -4,12 +4,12 @@ import android.util.Log;
 
 import java.util.List;
 
-public class InsertCountries extends AsyncTask<List<Country>, Void> {
+public class StoreCountries extends AsyncTask<List<Country>, Void> {
 
     private CountryQuizData countryQuizData;
-    private static final String DEBUG_TAG = "InsertCountries";
+    private static final String DEBUG_TAG = "StoreCountries";
 
-    public InsertCountries(CountryQuizData countryQuizData) {
+    public StoreCountries(CountryQuizData countryQuizData) {
         this.countryQuizData = countryQuizData;
     }
 
@@ -18,18 +18,18 @@ public class InsertCountries extends AsyncTask<List<Country>, Void> {
         List<Country> countries = lists[0];
 
         if (countries != null && !countries.isEmpty()) {
-            // Begin database transaction for inserting countries
+            // Begin database transaction for storing countries
             countryQuizData.open();  // Open database connection
 
             for (Country country : countries) {
-                // Insert country into the database
+                // Stored country into the database
                 countryQuizData.storeCountry(country);
-                Log.d(DEBUG_TAG, "Inserted Country: " + country.getName());
+                Log.d(DEBUG_TAG, "Stored Country: " + country.getName());
             }
 
-            countryQuizData.close();  // Close the database connection after insertion
+            countryQuizData.close();  // Close the database connection after storing task
         } else {
-            Log.e(DEBUG_TAG, "No countries to insert.");
+            Log.e(DEBUG_TAG, "No countries to store.");
         }
 
         return null;
@@ -37,7 +37,7 @@ public class InsertCountries extends AsyncTask<List<Country>, Void> {
 
     @Override
     protected void onPostExecute(Void result) {
-        // This method will be called after the insertion task completes.
-        Log.d(DEBUG_TAG, "Countries insertion completed.");
+        // This method will be called after the storing task completes.
+        Log.d(DEBUG_TAG, "Countries storing task completed.");
     }
 }
