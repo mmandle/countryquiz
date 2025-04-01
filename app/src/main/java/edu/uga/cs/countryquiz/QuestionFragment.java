@@ -14,13 +14,20 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class QuestionFragment extends Fragment {
 
     private static final String ARG_QUESTION_NUMBER = "question_number";
+    private static final String[] CONTINENTS = {"Oceania", "North America", "South America", "Europe", "Africa", "Asia"};
+
     private Button option1, option2, option3;
-    private TextView resultText;
+    private TextView questionText, resultText;
+    private ImageView questionImage;
     private String correctAnswer;
-    private boolean answered = false; // Ensures user can only answer once
+    private boolean answered = false;
     private QuizViewModel quizViewModel;
 
     public static QuestionFragment newInstance(int questionNumber) {
@@ -36,99 +43,78 @@ public class QuestionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_question, container, false);
 
-        ImageView questionImage = view.findViewById(R.id.questionImage);
-        TextView questionText = view.findViewById(R.id.questionText);
+        questionImage = view.findViewById(R.id.questionImage);
+        questionText = view.findViewById(R.id.questionText);
         option1 = view.findViewById(R.id.option1);
         option2 = view.findViewById(R.id.option2);
         option3 = view.findViewById(R.id.option3);
         resultText = new TextView(getActivity());
 
-        // Initialize ViewModel
         quizViewModel = new ViewModelProvider(requireActivity()).get(QuizViewModel.class);
 
-        // Adding resultText below buttons
         ViewGroup layout = (ViewGroup) view;
         layout.addView(resultText);
         resultText.setTextSize(18);
         resultText.setPadding(0, 20, 0, 0);
-        resultText.setVisibility(View.GONE); // Hide initially
+        resultText.setVisibility(View.GONE);
 
         int questionNumber = getArguments() != null ? getArguments().getInt(ARG_QUESTION_NUMBER) : 1;
 
-        // Set question text, image, and correct answer
-        switch (questionNumber) {
-            case 1:
-                questionText.setText("What is the capital of France?");
-                questionImage.setImageResource(R.drawable.france);
-                option1.setText("Paris");
-                option2.setText("Berlin");
-                option3.setText("Madrid");
-                correctAnswer = "Paris";
-                break;
-            case 2:
-                questionText.setText("Which country has the Great Wall?");
-                questionImage.setImageResource(R.drawable.china);
-                option1.setText("Japan");
-                option2.setText("China");
-                option3.setText("South Korea");
-                correctAnswer = "China";
-                break;
-            case 3:
-                questionText.setText("Which country is known for pizza?");
-                questionImage.setImageResource(R.drawable.italy);
-                option1.setText("France");
-                option2.setText("Italy");
-                option3.setText("Spain");
-                correctAnswer = "Italy";
-                break;
-            case 4:
-                questionText.setText("Which country has kangaroos?");
-                questionImage.setImageResource(R.drawable.australia);
-                option1.setText("Australia");
-                option2.setText("Canada");
-                option3.setText("Brazil");
-                correctAnswer = "Australia";
-                break;
-            case 5:
-                questionText.setText("Where is the Amazon Rainforest?");
-                questionImage.setImageResource(R.drawable.brazil);
-                option1.setText("India");
-                option2.setText("Brazil");
-                option3.setText("Mexico");
-                correctAnswer = "Brazil";
-                break;
-            case 6:
-                questionText.setText("Which country has the Statue of Liberty?");
-                questionImage.setImageResource(R.drawable.usa);
-                option1.setText("USA");
-                option2.setText("France");
-                option3.setText("UK");
-                correctAnswer = "USA";
-                break;
+        // Use the cached country list from QuizViewModel
+        List<Country> countries = quizViewModel.getCountryList();
+        if (countries == null || countries.isEmpty()) {
+            questionText.setText("No countries available in database.");
+        } else {
+            setupQuestion(countries);
         }
-
-        // Set answer click listeners
-        option1.setOnClickListener(this::checkAnswer);
-        option2.setOnClickListener(this::checkAnswer);
-        option3.setOnClickListener(this::checkAnswer);
 
         return view;
     }
 
+    private void setupQuestion(List<Country> countries) {
+        Collections.shuffle(countries);
+        Country selectedCountry = countries.get(0); // Pick the first random country
+
+        correctAnswer = selectedCountry.getContinent();
+        questionText.setText("Which continent is " + selectedCountry.getName() + " in?");
+        questionImage.setImageResource(getFlagResource(selectedCountry.getName()));
+
+        List<String> options = new ArrayList<>();
+        options.add(correctAnswer);
+
+        // Add two incorrect answers
+        List<String> possibleWrongAnswers = new ArrayList<>();
+        for (String continent : CONTINENTS) {
+            if (!continent.equals(correctAnswer)) {
+                possibleWrongAnswers.add(continent);
+            }
+        }
+        Collections.shuffle(possibleWrongAnswers);
+        options.add(possibleWrongAnswers.get(0));
+        options.add(possibleWrongAnswers.get(1));
+
+        Collections.shuffle(options);
+
+        option1.setText(options.get(0));
+        option2.setText(options.get(1));
+        option3.setText(options.get(2));
+
+        option1.setOnClickListener(this::checkAnswer);
+        option2.setOnClickListener(this::checkAnswer);
+        option3.setOnClickListener(this::checkAnswer);
+    }
+
     private void checkAnswer(View view) {
-        if (answered) return; // Prevent multiple selections
+        if (answered) return;
 
         Button selectedButton = (Button) view;
         String selectedAnswer = selectedButton.getText().toString();
         answered = true;
 
-        // Change button colors based on correctness
         if (selectedAnswer.equals(correctAnswer)) {
             selectedButton.setBackgroundColor(Color.GREEN);
             resultText.setText("Correct!");
             resultText.setTextColor(Color.GREEN);
-
-            // Increment correct answers count
             quizViewModel.incrementCorrectAnswers();
         } else {
             selectedButton.setBackgroundColor(Color.RED);
@@ -136,7 +122,12 @@ public class QuestionFragment extends Fragment {
             resultText.setTextColor(Color.RED);
         }
 
-        // Show correct answer in green
+        highlightCorrectAnswer();
+        resultText.setVisibility(View.VISIBLE);
+        quizViewModel.incrementCompletedQuestions();
+    }
+
+    private void highlightCorrectAnswer() {
         if (option1.getText().toString().equals(correctAnswer)) {
             option1.setBackgroundColor(Color.GREEN);
         } else {
@@ -152,12 +143,10 @@ public class QuestionFragment extends Fragment {
         } else {
             option3.setBackgroundColor(Color.RED);
         }
-
-        // Display result message
-        resultText.setVisibility(View.VISIBLE);
-
-        // Notify ViewModel that a question was answered
-        quizViewModel.incrementCompletedQuestions();
     }
 
+    private int getFlagResource(String countryName) {
+        String formattedName = countryName.toLowerCase().replace(" ", "_");
+        return getResources().getIdentifier(formattedName, "drawable", getActivity().getPackageName());
+    }
 }
