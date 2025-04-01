@@ -43,7 +43,7 @@ public class QuestionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_question, container, false);
 
-        questionImage = view.findViewById(R.id.questionImage);
+//        questionImage = view.findViewById(R.id.questionImage);
         questionText = view.findViewById(R.id.questionText);
         option1 = view.findViewById(R.id.option1);
         option2 = view.findViewById(R.id.option2);
@@ -77,7 +77,7 @@ public class QuestionFragment extends Fragment {
 
         correctAnswer = selectedCountry.getContinent();
         questionText.setText("Which continent is " + selectedCountry.getName() + " in?");
-        questionImage.setImageResource(getFlagResource(selectedCountry.getName()));
+//        questionImage.setImageResource(getFlagResource(selectedCountry.getName()));
 
         List<String> options = new ArrayList<>();
         options.add(correctAnswer);
