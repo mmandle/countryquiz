@@ -33,6 +33,7 @@ public class CSVReaderTask extends AsyncTask<Void, List<Country>> {
                     String continent = nextRow[1].trim();
 
                     countries.add(new Country(countryName, continent));
+                    Log.d(DEBUG_TAG, "Added Country: " + countryName + ", Continent: " + continent);
                 }
             }
 
