@@ -46,42 +46,9 @@ public class CountryQuizData {
         }
     }
 
-    public boolean isDBOpen()
-    {
+    public boolean isDBOpen() {
         return db.isOpen();
     }
-
-    // Check if the countries table already has data
-//    public boolean isCountryDataPresent() {
-//        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + CountryQuizDBHelper.TABLE_COUNTRIES, null);
-//        boolean hasData = false;
-//
-//        if (cursor != null) {
-//            if (cursor.moveToFirst()) {
-//                hasData = cursor.getInt(0) > 0;
-//            }
-//            cursor.close();
-//        }
-//        return hasData;
-//    }
-
-//    // Insert countries into the database
-//    public void insertCountries(List<Country> countries) {
-//        db.beginTransaction();
-//        try {
-//            for (Country country : countries) {
-//                ContentValues values = new ContentValues();
-//                values.put(CountryQuizDBHelper.COUNTRY_COLUMN_NAME, country.getName());
-//                values.put(CountryQuizDBHelper.COUNTRY_COLUMN_CONTINENT, country.getContinent());
-//                db.insert(CountryQuizDBHelper.TABLE_COUNTRIES, null, values);
-//            }
-//            db.setTransactionSuccessful();
-//        } catch (Exception e) {
-//            Log.e(DEBUG_TAG, "Error inserting countries: " + e.getMessage(), e);
-//        } finally {
-//            db.endTransaction();
-//        }
-//    }
 
     // Store a new country
     public Country storeCountry(Country country) {
