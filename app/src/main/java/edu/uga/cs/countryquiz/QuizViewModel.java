@@ -64,4 +64,14 @@ public class QuizViewModel extends ViewModel {
     public boolean isCountryListLoaded() {
         return countryList != null && !countryList.isEmpty();
     }
+
+    // Add a method to allow updating the completed questions (needed for restoring state)
+    public void setCompletedQuestions(int completed) {
+        completedQuestions.setValue(completed);
+    }
+
+    // Add a method to allow updating the correct answers (needed for restoring state)
+    public void setCorrectAnswers(int correct) {
+        correctAnswers.setValue(correct);
+    }
 }

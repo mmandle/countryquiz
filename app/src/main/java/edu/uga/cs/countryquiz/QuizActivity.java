@@ -1,6 +1,7 @@
 package edu.uga.cs.countryquiz;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -66,5 +67,32 @@ public class QuizActivity extends AppCompatActivity {
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             tab.setText("Q" + (position + 1));
         }).attach();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Save quiz progress (current question and completed questions)
+        SharedPreferences prefs = getSharedPreferences("quiz_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("current_question", viewPager.getCurrentItem()); // Save the current question
+        editor.putInt("completed_questions", quizViewModel.getCompletedQuestions().getValue() != null ? quizViewModel.getCompletedQuestions().getValue() : 0); // Save completed questions
+        editor.putInt("correct_answers", quizViewModel.getCorrectAnswers().getValue() != null ? quizViewModel.getCorrectAnswers().getValue() : 0); // Save correct answers
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Restore quiz progress
+        SharedPreferences prefs = getSharedPreferences("quiz_prefs", MODE_PRIVATE);
+        int savedQuestion = prefs.getInt("current_question", 0);
+        int savedCompletedQuestions = prefs.getInt("completed_questions", 0);
+        int savedCorrectAnswers = prefs.getInt("correct_answers", 0);
+
+        quizViewModel.setCompletedQuestions(savedCompletedQuestions);
+        quizViewModel.setCorrectAnswers(savedCorrectAnswers); // Restore correct answers
+        viewPager.setCurrentItem(savedQuestion); // Set the current question when the user returns
+        progressText.setText(savedCompletedQuestions + " of 6"); // Update the progress text
     }
 }
