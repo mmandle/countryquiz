@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,9 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Button viewResultsButton = findViewById(R.id.pastResults);
 
         startQuizButton.setOnClickListener(v -> startQuiz());
-        viewResultsButton.setOnClickListener(v -> {
-            // No action yet for viewing past results
-        });
+        viewResultsButton.setOnClickListener(v -> {});
     }
 
     private void startQuiz() {
