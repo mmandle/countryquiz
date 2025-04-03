@@ -31,12 +31,18 @@ public class MainActivity extends AppCompatActivity {
         Button viewResultsButton = findViewById(R.id.pastResults);
 
         startQuizButton.setOnClickListener(v -> startQuiz());
-        viewResultsButton.setOnClickListener(v -> {});
+        viewResultsButton.setOnClickListener(v -> openPastResults());
     }
 
     private void startQuiz() {
         Log.d(DEBUG_TAG, "Starting quiz...");
         Intent intent = new Intent(MainActivity.this, QuizActivity.class);
+        startActivity(intent);
+    }
+
+    private void openPastResults() {
+        Log.d(DEBUG_TAG, "Opening Past Results...");
+        Intent intent = new Intent(MainActivity.this, PastResultActivity.class);
         startActivity(intent);
     }
 }
