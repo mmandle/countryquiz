@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class QuizPagerAdapter extends FragmentStateAdapter {
 
-    private static final int TOTAL_QUESTIONS = 6; // Always 6 questions
+    private static final int TOTAL_QUESTIONS = 6;
 
     public QuizPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
@@ -16,7 +16,7 @@ public class QuizPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return QuestionFragment.newInstance(position + 1); // Load a fragment for each question
+        return QuestionFragment.newInstance(position); // Use zero-based index
     }
 
     @Override

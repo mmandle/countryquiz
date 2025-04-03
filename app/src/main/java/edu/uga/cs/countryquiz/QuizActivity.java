@@ -13,6 +13,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class QuizActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager;
@@ -62,6 +66,21 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void setupQuiz() {
+        if (quizViewModel.getCountryList() != null) {
+            List<Country> shuffledCountries = new ArrayList<>(quizViewModel.getCountryList());
+            Random random = new Random();
+
+            // Fisher-Yates shuffle using Random
+            for (int i = shuffledCountries.size() - 1; i > 0; i--) {
+                int j = random.nextInt(i + 1);
+                Country temp = shuffledCountries.get(i);
+                shuffledCountries.set(i, shuffledCountries.get(j));
+                shuffledCountries.set(j, temp);
+            }
+
+            quizViewModel.setCountryList(shuffledCountries); // Store the shuffled list
+        }
+
         quizPagerAdapter = new QuizPagerAdapter(this);
         viewPager.setAdapter(quizPagerAdapter);
 

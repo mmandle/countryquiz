@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,8 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class QuestionFragment extends Fragment {
 
@@ -25,7 +24,6 @@ public class QuestionFragment extends Fragment {
 
     private Button option1, option2, option3;
     private TextView questionText, resultText;
-    private ImageView questionImage;
     private String correctAnswer;
     private boolean answered = false;
     private QuizViewModel quizViewModel;
@@ -43,7 +41,6 @@ public class QuestionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_question, container, false);
 
-//        questionImage = view.findViewById(R.id.questionImage);
         questionText = view.findViewById(R.id.questionText);
         option1 = view.findViewById(R.id.option1);
         option2 = view.findViewById(R.id.option2);
@@ -58,26 +55,21 @@ public class QuestionFragment extends Fragment {
         resultText.setPadding(0, 20, 0, 0);
         resultText.setVisibility(View.GONE);
 
-        int questionNumber = getArguments() != null ? getArguments().getInt(ARG_QUESTION_NUMBER) : 1;
+        int questionNumber = getArguments() != null ? getArguments().getInt(ARG_QUESTION_NUMBER, 0) : 0;
+        List<Country> selectedCountries = quizViewModel.getCountryList();  // Corrected to get the full list
 
-        // Use the cached country list from QuizViewModel
-        List<Country> countries = quizViewModel.getCountryList();
-        if (countries == null || countries.isEmpty()) {
-            questionText.setText("No countries available in database.");
+        if (selectedCountries == null || selectedCountries.isEmpty() || questionNumber >= selectedCountries.size()) {
+            questionText.setText("No valid question available.");
         } else {
-            setupQuestion(countries);
+            setupQuestion(selectedCountries.get(questionNumber));
         }
 
         return view;
     }
 
-    private void setupQuestion(List<Country> countries) {
-        Collections.shuffle(countries);
-        Country selectedCountry = countries.get(0); // Pick the first random country
-
+    private void setupQuestion(Country selectedCountry) {
         correctAnswer = selectedCountry.getContinent();
         questionText.setText("Which continent is " + selectedCountry.getName() + " in?");
-//        questionImage.setImageResource(getFlagResource(selectedCountry.getName()));
 
         List<String> options = new ArrayList<>();
         options.add(correctAnswer);
@@ -89,19 +81,28 @@ public class QuestionFragment extends Fragment {
                 possibleWrongAnswers.add(continent);
             }
         }
-        Collections.shuffle(possibleWrongAnswers);
-        options.add(possibleWrongAnswers.get(0));
-        options.add(possibleWrongAnswers.get(1));
 
-        Collections.shuffle(options);
+        Random random = new Random();
+        options.add(possibleWrongAnswers.remove(random.nextInt(possibleWrongAnswers.size())));
+        options.add(possibleWrongAnswers.remove(random.nextInt(possibleWrongAnswers.size())));
 
-        option1.setText(options.get(0));
-        option2.setText(options.get(1));
-        option3.setText(options.get(2));
+        // Shuffle answer choices manually
+        List<Button> buttons = new ArrayList<>();
+        buttons.add(option1);
+        buttons.add(option2);
+        buttons.add(option3);
 
-        option1.setOnClickListener(this::checkAnswer);
-        option2.setOnClickListener(this::checkAnswer);
-        option3.setOnClickListener(this::checkAnswer);
+        for (int i = 0; i < buttons.size(); i++) {
+            int randIndex = random.nextInt(buttons.size());
+            Button temp = buttons.get(i);
+            buttons.set(i, buttons.get(randIndex));
+            buttons.set(randIndex, temp);
+        }
+
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).setText(options.get(i));
+            buttons.get(i).setOnClickListener(this::checkAnswer);
+        }
     }
 
     private void checkAnswer(View view) {
@@ -128,25 +129,8 @@ public class QuestionFragment extends Fragment {
     }
 
     private void highlightCorrectAnswer() {
-        if (option1.getText().toString().equals(correctAnswer)) {
-            option1.setBackgroundColor(Color.GREEN);
-        } else {
-            option1.setBackgroundColor(Color.RED);
-        }
-        if (option2.getText().toString().equals(correctAnswer)) {
-            option2.setBackgroundColor(Color.GREEN);
-        } else {
-            option2.setBackgroundColor(Color.RED);
-        }
-        if (option3.getText().toString().equals(correctAnswer)) {
-            option3.setBackgroundColor(Color.GREEN);
-        } else {
-            option3.setBackgroundColor(Color.RED);
-        }
-    }
-
-    private int getFlagResource(String countryName) {
-        String formattedName = countryName.toLowerCase().replace(" ", "_");
-        return getResources().getIdentifier(formattedName, "drawable", getActivity().getPackageName());
+        if (option1.getText().toString().equals(correctAnswer)) option1.setBackgroundColor(Color.GREEN);
+        if (option2.getText().toString().equals(correctAnswer)) option2.setBackgroundColor(Color.GREEN);
+        if (option3.getText().toString().equals(correctAnswer)) option3.setBackgroundColor(Color.GREEN);
     }
 }
