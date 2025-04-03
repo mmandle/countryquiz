@@ -53,6 +53,7 @@ public class QuizActivity extends AppCompatActivity {
             progressText.setText(completed + " of 6");
 
             if (completed != null && completed == 6) {
+
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.quizContainer, new ResultsFragment())
                         .commit();
@@ -81,18 +82,6 @@ public class QuizActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Restore quiz progress
-        SharedPreferences prefs = getSharedPreferences("quiz_prefs", MODE_PRIVATE);
-        int savedQuestion = prefs.getInt("current_question", 0);
-        int savedCompletedQuestions = prefs.getInt("completed_questions", 0);
-        int savedCorrectAnswers = prefs.getInt("correct_answers", 0);
 
-        quizViewModel.setCompletedQuestions(savedCompletedQuestions);
-        quizViewModel.setCorrectAnswers(savedCorrectAnswers); // Restore correct answers
-        viewPager.setCurrentItem(savedQuestion); // Set the current question when the user returns
-        progressText.setText(savedCompletedQuestions + " of 6"); // Update the progress text
-    }
+
 }
