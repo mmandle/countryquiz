@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Button viewResultsButton = findViewById(R.id.pastResults);
 
         startQuizButton.setOnClickListener(v -> startQuiz());
-        viewResultsButton.setOnClickListener(v -> {});
+        viewResultsButton.setOnClickListener(v -> openPastResults());
 
         // Check if the database already has countries before reading CSV
         CountryQuizData countryQuizData = new CountryQuizData(this);
@@ -55,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
     private void startQuiz() {
         Log.d(DEBUG_TAG, "Starting quiz...");
         Intent intent = new Intent(MainActivity.this, QuizActivity.class);
+        startActivity(intent);
+    }
+
+    private void openPastResults() {
+        Log.d(DEBUG_TAG, "Opening Past Results...");
+        Intent intent = new Intent(MainActivity.this, PastResultActivity.class);
         startActivity(intent);
     }
 }

@@ -16,6 +16,7 @@ public class RetrieveQuizzes extends AsyncTask<Void, List<Quiz>> {
     public RetrieveQuizzes(CountryQuizData countryQuizData, OnQuizzesRetrievedListener listener) {
         this.countryQuizData = countryQuizData;
         this.listener = listener;
+        Log.d(DEBUG_TAG, "RetrieveQuizzes task initialized.");
     }
 
     @Override
@@ -23,6 +24,8 @@ public class RetrieveQuizzes extends AsyncTask<Void, List<Quiz>> {
         countryQuizData.open(); // Open database connection
         List<Quiz> quizzes = countryQuizData.retrieveAllQuizzes();
         countryQuizData.close(); // Close database connection
+        Log.d(DEBUG_TAG, "Fetching quizzes... Total count: " + quizzes.size());
+
         return quizzes;
     }
 
