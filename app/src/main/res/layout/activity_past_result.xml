@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center_horizontal"
+    android:background="@android:color/holo_red_dark">
+
+    <!-- Title moved down by 50px -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Past Results"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="50dp"/>
+
+    <!-- Total quizzes count -->
+    <TextView
+        android:id="@+id/textViewTotalQuizzes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total number of quizzes: 0"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Scrollable Box for Quiz Results -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:padding="16dp"
+        android:elevation="4dp"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:id="@+id/textViewResults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:typeface="monospace"/>
+    </ScrollView>
+
+    <!-- Back to Main Button -->
+    <Button
+        android:id="@+id/buttonBackToMain"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Back to Main"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:backgroundTint="@color/white"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>
