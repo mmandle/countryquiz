@@ -13,9 +13,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class ResultsFragment extends Fragment {
 
     private QuizViewModel quizViewModel;
+    private CountryQuizData countryQuizData;
 
     @Nullable
     @Override
@@ -29,7 +34,7 @@ public class ResultsFragment extends Fragment {
         // Get ViewModel instance
         quizViewModel = new ViewModelProvider(requireActivity()).get(QuizViewModel.class);
 
-        // Display the results
+        // Retrieve the user's score
         int score = quizViewModel.getCorrectAnswers().getValue() != null ? quizViewModel.getCorrectAnswers().getValue() : 0;
         resultsText.setText("You scored " + score + " out of 6!");
 
@@ -46,8 +51,10 @@ public class ResultsFragment extends Fragment {
         } else {
             feedbackMessage = "Okay Einstein";
         }
-
         feedbackText.setText(feedbackMessage);
+
+        // Store quiz results in the database
+        storeQuizResult(score);
 
         // Home button returns to MainActivity
         homeButton.setOnClickListener(v -> {
@@ -57,5 +64,21 @@ public class ResultsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    /**
+     * Stores the quiz result in the database.
+     */
+    private void storeQuizResult(int score) {
+        countryQuizData = new CountryQuizData(requireContext());
+
+        // Get the current date in a readable format
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+
+        // Create a new Quiz object
+        Quiz quiz = new Quiz(currentDate, score);
+
+        // Store the quiz asynchronously using StoreQuiz
+        new StoreQuiz(countryQuizData).execute(quiz);
     }
 }
