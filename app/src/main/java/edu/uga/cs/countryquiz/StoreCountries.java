@@ -8,9 +8,11 @@ public class StoreCountries extends AsyncTask<List<Country>, Void> {
 
     private CountryQuizData countryQuizData;
     private static final String DEBUG_TAG = "StoreCountries";
+    private OnStoreCompleteListener listener; // Callback for completion
 
-    public StoreCountries(CountryQuizData countryQuizData) {
+    public StoreCountries(CountryQuizData countryQuizData, OnStoreCompleteListener listener) {
         this.countryQuizData = countryQuizData;
+        this.listener = listener;
     }
 
     @Override
@@ -18,16 +20,14 @@ public class StoreCountries extends AsyncTask<List<Country>, Void> {
         List<Country> countries = lists[0];
 
         if (countries != null && !countries.isEmpty()) {
-            // Begin database transaction for storing countries
             countryQuizData.open();  // Open database connection
 
             for (Country country : countries) {
-                // Stored country into the database
                 countryQuizData.storeCountry(country);
                 Log.d(DEBUG_TAG, "Stored Country: " + country.getName());
             }
 
-            countryQuizData.close();  // Close the database connection after storing task
+            countryQuizData.close();  // Close the database connection
         } else {
             Log.e(DEBUG_TAG, "No countries to store.");
         }
@@ -37,7 +37,14 @@ public class StoreCountries extends AsyncTask<List<Country>, Void> {
 
     @Override
     protected void onPostExecute(Void result) {
-        // This method will be called after the storing task completes.
         Log.d(DEBUG_TAG, "Countries storing task completed.");
+        if (listener != null) {
+            listener.onStoreComplete();
+        }
+    }
+
+    public interface OnStoreCompleteListener {
+        void onStoreComplete();
     }
 }
+

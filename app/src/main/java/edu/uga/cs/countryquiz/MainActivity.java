@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,25 +30,9 @@ public class MainActivity extends AppCompatActivity {
         Button viewResultsButton = findViewById(R.id.pastResults);
 
         startQuizButton.setOnClickListener(v -> startQuiz());
-        viewResultsButton.setOnClickListener(v -> {});
-
-        // Check if the database already has countries before reading CSV
-        CountryQuizData countryQuizData = new CountryQuizData(this);
-        new RetrieveCountries(countryQuizData, countries -> {
-            if (countries.isEmpty()) {
-                Log.d(DEBUG_TAG, "Database is empty. Reading CSV and storing countries...");
-                new CSVReaderTask(this, countriesList -> {
-                    if (countriesList != null && !countriesList.isEmpty()) {
-                        Log.d(DEBUG_TAG, "Storing countries into database...");
-                        new StoreCountries(new CountryQuizData(this)).execute(countriesList);
-                    } else {
-                        Log.e(DEBUG_TAG, "No countries to store.");
-                    }
-                }).execute();
-            } else {
-                Log.d(DEBUG_TAG, "Database already contains " + countries.size() + " countries. Skipping CSV read.");
-            }
-        }).execute();
+        viewResultsButton.setOnClickListener(v -> {
+            // No action yet for viewing past results
+        });
     }
 
     private void startQuiz() {
